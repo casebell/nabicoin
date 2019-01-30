@@ -10,7 +10,7 @@ The Nabicoin  implementation in Go, as described in these articles:
 6. [Transactions 2](https://jeiwan.cc/posts/building-blockchain-in-go-part-6/)
 7. [Network](https://jeiwan.cc/posts/building-blockchain-in-go-part-7/)
 8. [Peer to Peer]()
-9. [Sender make block]()
+9. [Sender makes block]()
 10. [Empty block mining]()
 11. [Early miner get coin]()
 12. [Longer blockchain get life]()
