@@ -15,4 +15,4 @@ The Nabicoin  implementation in Go, as described in these articles:
 11. [Early miner get coin]()
 12. [Longer blockchain get life]()
 
-#If you want go build and run this source, you must change a value of mainServer's IP in server.go
+#If you want go build and run this source, you must change a value of mainServer's IP and Port number in server.go
