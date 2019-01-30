@@ -25,7 +25,7 @@ import (
 const protocol = "tcp"
 const nodeVersion = 1
 const commandLength = 12
-const port = "60199"
+const port = "xxxx"
 const mainServer = "xxx.xxx.xxx.xxx:" + port
 const key = "xxxxxxxxxxxxxxxx"
 
