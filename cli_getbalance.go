@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"github.com/leekchan/accounting"
 )
 
 func (cli *CLI) getBalance(address string) int {
@@ -24,7 +25,8 @@ func (cli *CLI) getBalance(address string) int {
 		balance += out.Value
 	}
 
-	fmt.Printf("Balance of '%s': %d\n", address, balance)
+	ac := accounting.Accounting{Symbol: "", Precision: 0}
+	fmt.Printf("Balance of '%s': %s\n", address, ac.FormatMoney(balance))
 
 	return balance
 }
