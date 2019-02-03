@@ -155,7 +155,7 @@ func sendData(addr string, data []byte) bool {
 	timeout = 1 * time.Second
 	dial := net.Dialer{Timeout: timeout}
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 10; i++ {
 		conn, err := dial.Dial(protocol, addr)
 		if err != nil {
 			continue
