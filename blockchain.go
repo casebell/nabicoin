@@ -119,7 +119,7 @@ func (bc *Blockchain) AddBlock(addr string, block *Block) {
 		//fmt.Printf("[add block] block height: %d, last block height: %d\n", block.Height, lastBlock.Height)
 		if block.Height == lastBlock.Height+1 {
 			if bytes.Equal(block.PrevBlockHash, lastHash) {
-				if (lastBlock.Height > 10) && ((block.Timestamp - lastBlock.Timestamp) <= 60*10) {
+				if (lastBlock.Height < 10) || ((block.Timestamp - lastBlock.Timestamp) <= 60*10) {
 					blockData := block.Serialize()
 					err := b.Put(block.Hash, blockData)
 					if err != nil {
