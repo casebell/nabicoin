@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/big"
 	_ "runtime"
+	"time"
 )
 
 var (
@@ -60,6 +61,8 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	var hashInt big.Int
 	var hash [32]byte
 	nonce := 0
+
+	pow.block.Timestamp = time.Now().UTC().Unix()
 
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)

@@ -119,29 +119,31 @@ func (bc *Blockchain) AddBlock(addr string, block *Block) {
 		//fmt.Printf("[add block] block height: %d, last block height: %d\n", block.Height, lastBlock.Height)
 		if block.Height == lastBlock.Height+1 {
 			if bytes.Equal(block.PrevBlockHash, lastHash) {
-				blockData := block.Serialize()
-				err := b.Put(block.Hash, blockData)
-				if err != nil {
-					log.Panic(err)
-				}
-
-				err = b.Put([]byte("l"), block.Hash)
-				if err != nil {
-					log.Panic(err)
-				}
-				bc.tip = block.Hash
-
-				//BestHeight := bc.GetBestHeight()
-
-				for _, tx := range block.Transactions {
-					if txIDPool[hex.EncodeToString(tx.ID)] != hex.EncodeToString(tx.ID) {
-						txIDPool[hex.EncodeToString(tx.ID)] = hex.EncodeToString(tx.ID)
+				if (block.Timestamp - lastBlock.Timestamp) <= 60*10 {
+					blockData := block.Serialize()
+					err := b.Put(block.Hash, blockData)
+					if err != nil {
+						log.Panic(err)
 					}
+
+					err = b.Put([]byte("l"), block.Hash)
+					if err != nil {
+						log.Panic(err)
+					}
+					bc.tip = block.Hash
+
+					//BestHeight := bc.GetBestHeight()
+
+					for _, tx := range block.Transactions {
+						if txIDPool[hex.EncodeToString(tx.ID)] != hex.EncodeToString(tx.ID) {
+							txIDPool[hex.EncodeToString(tx.ID)] = hex.EncodeToString(tx.ID)
+						}
+					}
+
+					fmt.Printf("[add block] Added block %x\n", block.Hash)
+
+					sendGetData(addr, "block", nil, block.Height+1)
 				}
-
-				fmt.Printf("[add block] Added block %x\n", block.Hash)
-
-				sendGetData(addr, "block", nil, block.Height+1)
 			} else if (lastBlock.Height > 1) || (IsExist && (lastBlock.Height > 1)) {
 				//fmt.Println("[add block] delete last block")
 
