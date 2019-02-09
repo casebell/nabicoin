@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func (cli *CLI) send(from, to string, amount int, mineNow bool) {
+func (cli *CLI) send(from, to string, amount int) {
 	if !ValidateAddress(from) {
 		log.Panic("ERROR: Sender address is not valid")
 	}
@@ -22,77 +22,52 @@ func (cli *CLI) send(from, to string, amount int, mineNow bool) {
 		log.Panic(err)
 	}
 
-	if mineNow {
-		wallet := wallets.GetWallet(from)
-		tx := NewUTXOTransaction(&wallet, to, amount, &UTXOSet)
+	localhostAddr := getLocalhost()
 
-		if bc.VerifyTransaction(tx) == false {
-			fmt.Println("tx is fail")
+	nodeAddress = fmt.Sprintf("%s:%s", localhostAddr, port)
 
-			return
-		}
+	readAddressFromFile()
 
-		//cbTx := NewCoinbaseTX(from, "")
-		//txs := []*Transaction{cbTx, tx}
-		txs := []*Transaction{tx}
+	if len(knownNodes) > 1 {
+		testNodeConnectable()
 
-		newBlock, err := bc.MineBlock(txs)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+		ping_sort_address()
+	}
 
-		UTXOSet.Update(newBlock)
+	wallet := wallets.GetWallet(from)
 
-		fmt.Println("Success!")
+	tx := NewUTXOTransaction(&wallet, to, amount, &UTXOSet)
+
+	if bc.VerifyTransaction(tx) == false {
+		fmt.Println("#maked tx is fault.")
+
+		return
 	} else {
-		localhostAddr := getLocalhost()
+		fmt.Println("#maked tx is ok.")
+	}
 
-		nodeAddress = fmt.Sprintf("%s:%s", localhostAddr, port)
-
-		readAddressFromFile()
-
-		if len(knownNodes) > 1 {
-			testNodeConnectable()
-
-			ping_sort_address()
+	for idx := 0; idx < len(knownNodes); idx++ {
+		if knownNodes[idx] == nodeAddress {
+			continue
 		}
 
-		wallet := wallets.GetWallet(from)
+		result := sendTx(knownNodes[idx], tx)
+		if result {
+			txs := []*Transaction{tx}
 
-		tx := NewUTXOTransaction(&wallet, to, amount, &UTXOSet)
-
-		if bc.VerifyTransaction(tx) == false {
-			fmt.Println("#maked tx is fault.")
-
-			return
-		} else {
-			fmt.Println("#maked tx is ok.")
-		}
-
-		for idx := 0; idx < len(knownNodes); idx++ {
-			if knownNodes[idx] == nodeAddress {
-				continue
-			}
-
-			result := sendTx(knownNodes[idx], tx)
-			if result {
-				txs := []*Transaction{tx}
-
-				newBlock, err := bc.MineBlock(txs)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-
-				UTXOSet.Update(newBlock)
-
-				fmt.Println("Success!")
-
+			newBlock, err := bc.MineBlock(txs)
+			if err != nil {
+				log.Println(err)
 				return
 			}
-		}
 
-		fmt.Println("fail!")
+			UTXOSet.Update(newBlock)
+
+			fmt.Println("Success!")
+
+			return
+		}
 	}
+
+	fmt.Println("fail!")
 }
