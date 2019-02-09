@@ -25,9 +25,9 @@ import (
 const protocol = "tcp"
 const nodeVersion = 1
 const commandLength = 12
-const port = "xxxx"
-const mainServer = "xxx.xxx.xxx.xxx:" + port
-const key = "xxxxxxxxxxxxxxxx"
+const port = "60199"
+const mainServer = "222.239.254.125" + ":" + port
+const key = "maked by Wonho!!"
 
 var flagMining = false
 var remoteAddress string
@@ -164,7 +164,7 @@ func sendData(addr string, data []byte) bool {
 
 			_, err = io.Copy(conn, bytes.NewReader(data))
 			if err != nil {
-				log.Panic(err)
+				log.Println(err)
 			} else {
 				//fmt.Printf("[send data] sending success!!!")
 			}
@@ -689,6 +689,8 @@ func StartServer(minerAddress string) {
 
 		fmt.Println("EXIT NAVI-COIN SYSTEM")
 	}()
+
+	//log.Printf("Listen: %s\n", nodeAddress)
 
 	startMiningTime = time.Now()
 	startCleanTime = time.Now()
